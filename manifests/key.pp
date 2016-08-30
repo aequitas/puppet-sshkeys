@@ -13,6 +13,7 @@ define sshkeys::key (
   $options  = undef,
   $type     = undef,
   $user     = undef,
+  $host     = $sshkeys::host,
 ) {
   if ( !$user or !$key_name ) {
     fail( 'user and key_name should be defined')
@@ -22,7 +23,7 @@ define sshkeys::key (
     # hiera lookup in the key list if both key and type are not defined
     $keys_hash = hiera_hash('sshkeys::keys',undef)
     if ( !$keys_hash or !$keys_hash[$key_name] or !$keys_hash[$key_name]['key'] or !$keys_hash[$key_name]['type'] ) {
-      fail ( "cannot find the key ${key_name} for ${user}@${::fqdn} via hiera in the sshkeys::keys namespace" )
+      fail ( "cannot find the key ${key_name} for ${user}@${host} via hiera in the sshkeys::keys namespace" )
     }
     $fin_key = $keys_hash[$key_name]['key']
     $fin_type = $keys_hash[$key_name]['type']
@@ -35,7 +36,7 @@ define sshkeys::key (
     fail ('either key and type both should be defined or both should be absent')
   }
 
-  ssh_authorized_key { "${key_name}_at_${user}@${::fqdn}":
+  ssh_authorized_key { "${key_name}_at_${user}@${host}":
     ensure  => present,
     user    => $user,
     key     => $fin_key,

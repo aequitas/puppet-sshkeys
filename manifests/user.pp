@@ -23,6 +23,7 @@ define sshkeys::user (
   $uid              = undef,
   $gid              = undef,
   $fix_permissions  = true,
+  $host             = $sshkeys::host,
 ) {
   $user = $title
 
@@ -53,9 +54,9 @@ define sshkeys::user (
   #do it only if the user is present
   if ( $ensure == 'present' ) {
     if ( is_array($keys) ) {
-      $fin_keys = sshkeys_convert_to_hash($keys,$user,$::fqdn)
+      $fin_keys = sshkeys_convert_to_hash($keys,$user,$host)
     } elsif ( is_hash($keys) ) {
-      $fin_keys = sshkeys_restruct_to_hash($keys,$user,$::fqdn)
+      $fin_keys = sshkeys_restruct_to_hash($keys,$user,$host)
     } else {
       fail ( 'keys should be defined as array or hash')
     }

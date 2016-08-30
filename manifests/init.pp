@@ -9,6 +9,7 @@
 #
 class sshkeys (
   $users = undef,
+  $host  = $::fqdn,
 ){
   # hiera lookup
   $hiera_users = hiera_hash('sshkeys::users',undef)
